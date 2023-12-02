@@ -12,7 +12,7 @@ async fn calculate_sled_id(Path(packets_ids): Path<String>) -> (StatusCode, Stri
     if sled_id.len() > MAX_PACKETS_IN_SLED {
         return (
             StatusCode::BAD_REQUEST,
-            String::from("Ho Ho ho!! Only 20 packets fit in a sled!"),
+            String::from("Ho Ho ho!! Only 20 📦 packets fit in a 🛷 sled!"),
         );
     }
 
