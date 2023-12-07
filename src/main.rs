@@ -112,6 +112,31 @@ async fn contest(
     )
 }
 
+#[derive(Serialize)]
+pub struct ElfCounter {
+    pub elf: usize,
+    #[serde(rename(serialize = "elf on a shelf"))]
+    pub elf_on_a_shelf: usize,
+    #[serde(rename(serialize = "shelf with no elf on it"))]
+    pub shelf_with_no_elf_on_it: usize,
+}
+
+async fn count_elf(payload: String) -> (StatusCode, Json<ElfCounter>) {
+    let elf: Vec<&str> = payload.matches("elf").collect();
+    let elf_on_a_shelf: Vec<&str> = payload.matches("elf on a shelf").collect();
+    let shelf_with_no_elf_on_it = payload.replace("elf on a shelf", "");
+    let shelf_with_no_elf_on_it: Vec<&str> = shelf_with_no_elf_on_it.matches("shelf").collect();
+
+    (
+        StatusCode::OK,
+        Json(ElfCounter {
+            elf: elf.len(),
+            elf_on_a_shelf: elf_on_a_shelf.len(),
+            shelf_with_no_elf_on_it: shelf_with_no_elf_on_it.len(),
+        }),
+    )
+}
+
 #[shuttle_runtime::main]
 async fn main() -> shuttle_axum::ShuttleAxum {
     let router = Router::new()
@@ -119,7 +144,8 @@ async fn main() -> shuttle_axum::ShuttleAxum {
         .route("/-1/error", get(StatusCode::INTERNAL_SERVER_ERROR))
         .route("/1/*packets_ids", get(calculate_sled_id))
         .route("/4/strength", post(calculate_strength))
-        .route("/4/contest", post(contest));
+        .route("/4/contest", post(contest))
+        .route("/6", post(count_elf));
 
     Ok(router.into())
 }
