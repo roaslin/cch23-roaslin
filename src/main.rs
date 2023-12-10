@@ -3,6 +3,7 @@ use axum::{
     routing::{get, post},
     Router,
 };
+use axum_extra::extract::Cached;
 use cch23_roaslin::{
     day_0::hello_world,
     day_1::calculate_sled_id,
