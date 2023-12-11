@@ -1,11 +1,12 @@
 use axum::{
-    http::{Request, StatusCode},
+    http::StatusCode,
     routing::{get, post},
     Router,
 };
 use cch23_roaslin::{
     day_0::hello_world,
     day_1::calculate_sled_id,
+    day_11::count_magical_reds,
     day_4::{calculate_strength, contest},
     day_6::count_elf,
     day_7::{bake_cookie_recipe, decode_cookie_recipie},
@@ -27,7 +28,8 @@ async fn main() -> shuttle_axum::ShuttleAxum {
         .route("/7/bake", get(bake_cookie_recipe))
         .route("/8/weight/:pokedex_number", get(pokemon_weight_by_id))
         .route("/8/drop/:pokedex_number", get(pokemon_momentum_by_id))
-        .nest_service("/11/assets", ServeDir::new("assets"));
+        .nest_service("/11/assets", ServeDir::new("assets"))
+        .route("/11/red_pixels", post(count_magical_reds));
 
     Ok(router.into())
 }
