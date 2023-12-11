@@ -9,18 +9,25 @@ pub struct ReindeerStrength {
 
 #[derive(Deserialize)]
 pub struct ReindeerContest {
+    #[serde(default)]
     pub name: String,
-    pub strength: i32,
-    pub speed: f32,
-    pub height: i32,
-    pub antler_width: i32,
-    pub snow_magic_power: i32,
+    #[serde(default)]
+    pub strength: i64,
+    #[serde(default)]
+    pub speed: f64,
+    #[serde(default)]
+    pub height: i64,
+    #[serde(default)]
+    pub antler_width: i64,
+    #[serde(default)]
+    pub snow_magic_power: i64,
+    #[serde(default)]
     pub favorite_food: String,
-    #[serde(rename(deserialize = "cAnD13s_3ATeN-yesT3rdAy"))]
-    pub candies_eaten_yesterday: i32,
+    #[serde(default, rename(deserialize = "cAnD13s_3ATeN-yesT3rdAy"))]
+    pub candies_eaten_yesterday: i64,
 }
 
-#[derive(Serialize)]
+#[derive(Default, Serialize)]
 pub struct ContestSummary {
     pub fastest: String,
     pub tallest: String,
@@ -31,37 +38,42 @@ pub struct ContestSummary {
 pub async fn contest(
     extract::Json(payload): extract::Json<Vec<ReindeerContest>>,
 ) -> (StatusCode, Json<ContestSummary>) {
-    let reindeers = payload.iter();
-    let fastest = reindeers
-        .clone()
-        .max_by(|r1, r2| r1.speed.total_cmp(&r2.speed))
-        .unwrap();
-    let tallest = reindeers
-        .clone()
-        .max_by(|r1, r2| r1.height.cmp(&r2.height))
-        .unwrap();
-    let magician = reindeers
-        .clone()
-        .max_by(|r1, r2| r1.snow_magic_power.cmp(&r2.snow_magic_power))
-        .unwrap();
-    let consumer = reindeers
-        .clone()
-        .max_by(|r1, r2| r1.candies_eaten_yesterday.cmp(&r2.candies_eaten_yesterday))
-        .unwrap();
+    if payload.len() == 0 {
+        return (StatusCode::OK, Json(ContestSummary::default()));
+    }
+    let first = payload.first().unwrap();
+    let (mut fastest, mut tallest, mut magician, mut consumer) = (first, first, first, first);
+    for x in &payload {
+        if fastest.speed < x.speed {
+            fastest = x;
+        }
+        if tallest.height < x.height {
+            tallest = x;
+        }
+        if magician.snow_magic_power < x.snow_magic_power {
+            magician = x;
+        }
+        if consumer.candies_eaten_yesterday < x.candies_eaten_yesterday {
+            consumer = x;
+        }
+    }
 
     let fastest = format!(
         "Speeding past the finish line with a strength of {} is {}",
-        fastest.strength, fastest.name
+        fastest.strength, fastest.name,
     );
     let tallest = format!(
         "{} is standing tall with his {} cm wide antlers",
-        tallest.name, tallest.antler_width
+        tallest.name, tallest.antler_width,
     );
     let magician = format!(
         "{} could blast you away with a snow magic power of {}",
-        magician.name, magician.snow_magic_power
+        magician.name, magician.snow_magic_power,
     );
-    let consumer = format!("{} ate lots of candies, but also some grass", consumer.name);
+    let consumer = format!(
+        "{} ate lots of candies, but also some {}",
+        consumer.name, consumer.favorite_food,
+    );
 
     (
         StatusCode::OK,
