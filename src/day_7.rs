@@ -18,7 +18,7 @@ pub async fn decode_cookie_recipie(header: HeaderMap) -> (StatusCode, String) {
     (StatusCode::OK, format!("{}", recipe.trim()))
 }
 
-#[derive(Serialize)]
+#[derive(Default, Serialize)]
 pub struct BakedCookiesResponse {
     pub cookies: u32,
     pub pantry: Map<String, Value>,

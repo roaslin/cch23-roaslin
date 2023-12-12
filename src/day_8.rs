@@ -19,11 +19,9 @@ pub async fn pokemon_weight_by_id(Path(pokedex_number): Path<String>) -> (Status
             }
             let weight = response.text().await.unwrap();
             let weight: Value = serde_json::from_str(&weight).unwrap();
+            let weight: f64 = weight["weight"].as_f64().unwrap() / 10.0; // hectograms to kilograms
 
-            (
-                StatusCode::OK,
-                format!("{}", weight["weight"].as_number().unwrap()),
-            )
+            (StatusCode::OK, format!("{}", weight))
         }
         Err(error) => (
             StatusCode::INTERNAL_SERVER_ERROR,
