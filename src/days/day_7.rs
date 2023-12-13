@@ -56,8 +56,6 @@ pub async fn bake_cookie_recipe(header: HeaderMap) -> (StatusCode, Json<BakedCoo
             let ingredient_pantry_quantity = pantry.get(ingredient.0).unwrap().as_u64().unwrap();
             let ingredient_quantity = ingredient.1.as_u64().unwrap();
 
-            println!("ingredient {:?}", ingredient);
-            println!("ingredient_in_pantry {:?}", ingredient_pantry_quantity);
             pantry.insert(
                 String::from(ingredient.0),
                 Value::Number(Number::from(
