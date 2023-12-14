@@ -17,7 +17,8 @@ use days::{
     day_1::calculate_sled_id,
     day_11::count_magical_reds,
     day_12::{convert_ulids_to_uuids, let_santa_broil, load_packet_id, store_packet_id},
-    day_13::{orders, reset, task1, total, popular},
+    day_13::{orders, popular, reset, task1, total},
+    day_14::unsafe_html,
     day_4::{calculate_strength, contest},
     day_6::count_elf,
     day_7::{bake_cookie_recipe, decode_cookie_recipe},
@@ -56,7 +57,7 @@ impl AppState {
 #[shuttle_runtime::main]
 async fn main(
     #[shuttle_shared_db::Postgres(
-        local_uri = "postgres://postgres:{secrets.PASSWORD}@localhost:17155/postgres"
+        // local_uri = "postgres://postgres:{secrets.PASSWORD}@localhost:17155/postgres"
     )]
     pool: PgPool,
 ) -> shuttle_axum::ShuttleAxum {
@@ -92,6 +93,7 @@ async fn main(
         .route("/13/orders/total", get(total))
         .route("/13/orders/popular", get(popular))
         .route("/13/reset", post(reset))
+        .route("/14/unsafe", post(unsafe_html))
         .with_state(app_state);
 
     Ok(router.into())
