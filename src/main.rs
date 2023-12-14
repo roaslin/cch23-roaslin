@@ -18,7 +18,7 @@ use days::{
     day_11::count_magical_reds,
     day_12::{convert_ulids_to_uuids, let_santa_broil, load_packet_id, store_packet_id},
     day_13::{orders, popular, reset, task1, total},
-    day_14::unsafe_html,
+    day_14::{unsafe_html, safe_html},
     day_4::{calculate_strength, contest},
     day_6::count_elf,
     day_7::{bake_cookie_recipe, decode_cookie_recipe},
@@ -94,6 +94,7 @@ async fn main(
         .route("/13/orders/popular", get(popular))
         .route("/13/reset", post(reset))
         .route("/14/unsafe", post(unsafe_html))
+        .route("/14/safe", post(safe_html))
         .with_state(app_state);
 
     Ok(router.into())

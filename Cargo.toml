@@ -24,3 +24,4 @@ sqlx = { version = "0.7.1", features = [
     "runtime-async-std",
     "postgres",
 ] }
+html-escape = "0.2.13"
