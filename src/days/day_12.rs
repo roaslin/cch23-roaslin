@@ -56,6 +56,7 @@ pub struct LsbResponse {
     weekday: u64,
     #[serde(rename = "in the future")]
     in_the_future: u64,
+    #[serde(rename = "LSB is 1")]
     lsb: u64,
 }
 
