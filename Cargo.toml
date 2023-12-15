@@ -20,8 +20,5 @@ ulid = "1.1.0"
 uuid = "1.6.1"
 chrono = "0.4.31"
 shuttle-shared-db = { version = "0.35.0", features = ["postgres"] }
-sqlx = { version = "0.7.1", features = [
-    "runtime-async-std",
-    "postgres",
-] }
-html-escape = "0.2.13"
+sqlx = { version = "0.7.1", features = ["runtime-async-std", "postgres"] }
+minijinja = "1.0.10"
