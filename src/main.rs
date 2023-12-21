@@ -22,7 +22,7 @@ use days::{
     day_4::{calculate_strength, contest},
     day_6::count_elf,
     day_7::{bake_cookie_recipe, decode_cookie_recipe},
-    day_8::{pokemon_momentum_by_id, pokemon_weight_by_id},
+    day_8::{pokemon_momentum_by_id, pokemon_weight_by_id}, day_15::validate_nice,
 };
 use shuttle_runtime::CustomError;
 use sqlx::PgPool;
@@ -95,6 +95,10 @@ async fn main(
         .route("/13/reset", post(reset))
         .route("/14/unsafe", post(unsafe_html))
         .route("/14/safe", post(safe_html))
+        .route("/15/nice", post(validate_nice))
+        // .route("/15/game", post(validate_nice))
+        .route("/18/nice", post(validate_nice))
+
         .with_state(app_state);
 
     Ok(router.into())
