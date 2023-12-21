@@ -35,7 +35,7 @@ pub async fn orders(
     State(state): State<Arc<AppState>>,
     extract::Json(orders): extract::Json<Vec<Order>>,
 ) -> StatusCode {
-    println!("Orders {:?}", orders);
+    // println!("Orders {:?}", orders);
     for order in orders {
         match sqlx::query_as::<_, Order>(
             "INSERT INTO orders (id, region_id, gift_name, quantity) VALUES ($1, $2,$3,$4) RETURNING id, region_id, gift_name, quantity",

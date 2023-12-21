@@ -40,7 +40,6 @@ pub async fn validate_nice(
     let mut count_vowels = 0;
     let mut consecutive = false;
     for i in 0..input.len() - 2 {
-        println!("VALUE input is {}", input);
         let c1 = &input[i..i + 1].chars().next().unwrap();
         let c2 = &input[i + 1..i + 2].chars().next().unwrap();
         if VOWELS.contains(c1) {

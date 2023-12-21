@@ -18,11 +18,13 @@ use days::{
     day_11::count_magical_reds,
     day_12::{convert_ulids_to_uuids, let_santa_broil, load_packet_id, store_packet_id},
     day_13::{orders, popular, reset, task1, total},
-    day_14::{unsafe_html, safe_html},
+    day_14::{safe_html, unsafe_html},
+    day_15::validate_nice,
+    day_18::{reset_day_18, orders_day_18, regions, regions_total},
     day_4::{calculate_strength, contest},
     day_6::count_elf,
     day_7::{bake_cookie_recipe, decode_cookie_recipe},
-    day_8::{pokemon_momentum_by_id, pokemon_weight_by_id}, day_15::validate_nice,
+    day_8::{pokemon_momentum_by_id, pokemon_weight_by_id},
 };
 use shuttle_runtime::CustomError;
 use sqlx::PgPool;
@@ -97,8 +99,10 @@ async fn main(
         .route("/14/safe", post(safe_html))
         .route("/15/nice", post(validate_nice))
         // .route("/15/game", post(validate_nice))
-        .route("/18/nice", post(validate_nice))
-
+        .route("/18/reset", post(reset_day_18))
+        .route("/18/orders", post(orders_day_18))
+        .route("/18/regions", post(regions))
+        .route("/18/regions/total", get(regions_total))
         .with_state(app_state);
 
     Ok(router.into())

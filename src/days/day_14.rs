@@ -46,7 +46,7 @@ pub async fn safe_html(extract::Json(content): extract::Json<Content>) -> Html<S
     // let content = html_escape::encode_text(&content);
     // let html = html.replace("{}", &content).replace("\"", "&quot;");
     // let html = html.trim();
-    println!("Content is {:?}", content);
+    // println!("Content is {:?}", content);
     let mut env = Environment::new();
     env.add_template("safe", html).unwrap();
     let tmpl = env.get_template("safe").unwrap();
