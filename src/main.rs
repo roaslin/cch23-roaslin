@@ -20,7 +20,7 @@ use days::{
     day_13::{orders, popular, reset, task1, total},
     day_14::{safe_html, unsafe_html},
     day_15::validate_nice,
-    day_18::{reset_day_18, orders_day_18, regions, regions_total},
+    day_18::{reset_day_18, orders_day_18, regions, regions_total, regions_top_list},
     day_4::{calculate_strength, contest},
     day_6::count_elf,
     day_7::{bake_cookie_recipe, decode_cookie_recipe},
@@ -103,6 +103,7 @@ async fn main(
         .route("/18/orders", post(orders_day_18))
         .route("/18/regions", post(regions))
         .route("/18/regions/total", get(regions_total))
+        .route("/18/regions/top_list/:top_n_gifts", get(regions_top_list))
         .with_state(app_state);
 
     Ok(router.into())

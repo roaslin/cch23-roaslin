@@ -1,7 +1,7 @@
 use std::sync::Arc;
 
 use axum::{
-    extract::{self, State},
+    extract::{self, Path, State},
     http::StatusCode,
     Json,
 };
@@ -100,6 +100,60 @@ pub async fn regions_total(
     {
         Ok(total) => {
             println!("regions {:?}", total);
+            (StatusCode::OK, Json(total))
+        }
+        Err(error) => {
+            println!("error is {}", error);
+            (StatusCode::OK, Json(Vec::default()))
+        }
+    }
+}
+
+#[derive(Debug, Serialize, FromRow)]
+pub struct TopListGiftsByREgion {
+    pub region: String,
+    pub top_gifts: Vec<String>,
+}
+
+pub async fn regions_top_list(
+    Path(top_no_gifts): Path<i64>,
+    State(state): State<Arc<AppState>>,
+) -> (StatusCode, Json<Vec<TopListGiftsByREgion>>) {
+    if top_no_gifts < 1 {
+        match sqlx::query_as::<_, TopListGiftsByREgion>(
+            " SELECT name as region, ARRAY[]::text[] as top_gifts FROM regions",
+        )
+        .bind(&top_no_gifts)
+        .fetch_all(&state.pool)
+        .await
+        {
+            Ok(total) => {
+                // println!("regions {:?}", total);
+                return (StatusCode::OK, Json(total));
+            }
+            Err(error) => {
+                println!("error is {}", error);
+                return (StatusCode::OK, Json(Vec::default()));
+            }
+        }
+    }
+
+    match sqlx::query_as::<_, TopListGiftsByREgion>(
+        " SELECT region, array_remove(array_agg(gift_name), NULL) as top_gifts FROM (
+         SELECT regions.name as region, gift_name, row_number() OVER (PARTITION BY regions.name order by regions.name ASC, SUM(quantity) DESC, gift_name ASC) as row_num
+         FROM regions LEFT OUTER JOIN orders ON regions.id = orders.region_id
+         GROUP BY regions.name, gift_name
+         ORDER BY regions.name ASC, SUM(quantity) DESC, gift_name ASC
+       ) as deep
+     where row_num <= $1
+     group by region",
+    )
+    .bind(&top_no_gifts)
+    .fetch_all(&state.pool)
+    .await
+    {
+        Ok(total) => {
+            // println!("regions {:?}", total);
             (StatusCode::OK, Json(total))
         }
         Err(error) => {
